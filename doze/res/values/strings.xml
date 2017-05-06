@@ -32,4 +32,48 @@
     <string name="dlg_ok">OK</string>
     <string name="doze_settings_help_title">Help</string>
     <string name="doze_settings_help_text">These features use sensor events to launch a doze notification pulse. The chosen sensor is only enabled when the device receives a notification, this helps to reduce battery usage. There is also an option to enable the chosen sensor as soon as the screen turns off, this will cause higher battery usage.</string>
+
+    <string name="doze_title">Doze Settings</string>
+
+    <!--  DOZE EDITOR-->
+    <string name="action_save">Save</string>
+    <string name="action_restoredefault">Restore Defaults</string>
+
+    <!-- Title -->
+    <string name="inactive_timeout">Inactive timeout</string>
+    <string name="motion_inactive_timeout">Motion inactive timeout</string>
+    <string name="sensing_timeout">Sensing timeout</string>
+    <string name="locating_timeout">Locating timeout</string>
+    <string name="location_accuracy">Location accuracy</string>
+    <string name="idle_timeout">Idle Timeout</string>
+    <string name="idle_pending_timeout">Idle pending Timeout</string>
+    <string name="idle_after_inactive_timeout">Idle After Inactive Timeout</string>
+    <string name="idle_factor">Idle Factor</string>
+    <string name="idle_pending_factor">Idle Pending Factor</string>
+    <string name="max_idle_timeout">Max Idle Timeout</string>
+    <string name="max_idle_pending_timeout">Max Idle Pending Timeout</string>
+    <string name="min_time_to_alarm">Min Time to Alarm</string>
+    <string name="max_temp_app_whitelist_duration">Max Temp App Whitelist Duration</string>
+    <string name="mms_temp_app_whitelist_duration">MMS Temp App Whitelist Duration</string>
+    <string name="sms_temp_app_whitelist_duration">SMS Temp App Whitelist Duration</string>
+
+    <!-- Description -->
+    <string name="inactive_timeout_description">This is the time, after becoming inactive, at which we start looking at the motion sensor to determine if the device is being left alone. We don\'t do this immediately after going inactive just because we don\'t want to be continually running the significant motion sensor whenever the screen is off.</string>
+    <string name="sensing_timeout_description">If we don\'t receive a callback from AnyMotion in this amount of time + locating_to, we will change from STATE_SENSING to STATE_INACTIVE, and any AnyMotion callbacks while not in STATE_SENSING will be ignored.</string>
+    <string name="locating_timeout_description">This is how long we will wait to try to get a good location fix before going in to idle mode.</string>
+    <string name="location_accuracy_description">The desired maximum accuracy (in meters) we consider the location to be good enough to go on to idle. We will be trying to get an accuracy fix at least this good or until locating_to expires.</string>
+    <string name="motion_inactive_timeout_description">This is the time, after seeing motion, that we wait after becoming inactive from that until we start looking for motion again.</string>
+    <string name="idle_after_inactive_timeout_description">This is the time, after the inactive timeout elapses, that we will wait looking for significant motion until we truly consider the device to be idle.</string>
+    <string name="idle_pending_timeout_description">This is the initial time, after being idle, that we will allow ourself to be back in the IDLE_PENDING state allowing the system to run normally until we return to idle.</string>
+    <string name="max_idle_pending_timeout_description">Maximum pending idle timeout (time spent running) we will be allowed to use.</string>
+    <string name="idle_pending_factor_description">Scaling factor to apply to current pending idle timeout each time we cycle through that state.</string>
+    <string name="idle_timeout_description">This is the initial time that we want to sit in the idle state before waking up again to return to pending idle and allowing normal work to run.</string>
+    <string name="max_idle_timeout_description">Maximum idle duration we will be allowed to use.</string>
+    <string name="idle_factor_description">Scaling factor to apply to current idle timeout each time we cycle through that state.</string>
+    <string name="min_time_to_alarm_description">This is the minimum time we will allow until the next upcoming alarm for us to actually go in to idle mode.</string>
+    <string name="max_temp_app_whitelist_duration_description">Max amount of time to temporarily whitelist an app when it receives a high tickle.</string>
+    <string name="mms_temp_app_whitelist_duration_description">Amount of time we would like to whitelist an app that is receiving an MMS.</string>
+    <string name="sms_temp_app_whitelist_duration_description">Amount of time we would like to whitelist an app that is receiving an SMS.</string>
+
+
 </resources>

@@ -55,4 +55,15 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory
+        android:key="doze_section"
+        android:title="@string/doze_title" >
+
+        <Preference
+            android:key="doze_settings"
+            android:persistent="false"
+            android:title="Edit doze settings"/>
+
+    </PreferenceCategory>
+
 </PreferenceScreen>

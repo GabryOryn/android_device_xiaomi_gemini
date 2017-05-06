@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <EditTextPreference android:title="@string/inactive_timeout"
+        android:persistent="false"
+        android:summary="@string/inactive_timeout_description"
+        android:key="et_inactive_to"/>
+
+    <EditTextPreference android:title="@string/sensing_timeout"
+        android:persistent="false"
+        android:summary="@string/sensing_timeout_description"
+        android:key="et_sensing_to"/>
+
+    <EditTextPreference android:title="@string/locating_timeout"
+        android:persistent="false"
+        android:summary="@string/locating_timeout_description"
+        android:key="et_locating_to"/>
+
+    <EditTextPreference android:title="@string/location_accuracy"
+        android:persistent="false"
+        android:summary="@string/location_accuracy_description"
+        android:key="et_location_accuracy"/>
+
+    <EditTextPreference android:title="@string/motion_inactive_timeout"
+        android:persistent="false"
+        android:summary="@string/motion_inactive_timeout_description"
+        android:key="et_motion_inactive_to"/>
+
+    <EditTextPreference android:title="@string/idle_after_inactive_timeout"
+        android:persistent="false"
+        android:summary="@string/idle_after_inactive_timeout_description"
+        android:key="et_idle_after_inactive_to"/>
+
+    <EditTextPreference android:title="@string/idle_pending_timeout"
+        android:persistent="false"
+        android:summary="@string/idle_pending_timeout_description"
+        android:key="et_idle_pending_to"/>
+
+    <EditTextPreference android:title="@string/max_idle_pending_timeout"
+        android:persistent="false"
+        android:summary="@string/max_idle_pending_timeout_description"
+        android:key="et_max_idle_pending_to"/>
+
+    <EditTextPreference android:title="@string/idle_pending_factor"
+        android:persistent="false"
+        android:summary="@string/idle_pending_factor_description"
+        android:key="et_idle_pending_factor"/>
+
+    <EditTextPreference android:title="@string/idle_timeout"
+        android:persistent="false"
+        android:summary="@string/idle_timeout_description"
+        android:key="et_idle_to"/>
+
+    <EditTextPreference android:title="@string/max_idle_timeout"
+        android:persistent="false"
+        android:summary="@string/max_idle_timeout_description"
+        android:key="et_max_idle_to"/>
+
+    <EditTextPreference android:title="@string/idle_factor"
+        android:persistent="false"
+        android:summary="@string/idle_factor_description"
+        android:key="et_idle_factor"/>
+
+    <EditTextPreference android:title="@string/min_time_to_alarm"
+        android:persistent="false"
+        android:summary="@string/min_time_to_alarm_description"
+        android:key="et_min_time_to_alarm"/>
+
+    <EditTextPreference android:title="@string/max_temp_app_whitelist_duration"
+        android:persistent="false"
+        android:summary="@string/max_temp_app_whitelist_duration_description"
+        android:key="et_max_temp_app_whitelist_duration"/>
+
+    <EditTextPreference android:title="@string/mms_temp_app_whitelist_duration"
+        android:persistent="false"
+        android:summary="@string/mms_temp_app_whitelist_duration_description"
+        android:key="et_mms_temp_app_whitelist_duration"/>
+
+    <EditTextPreference android:title="@string/sms_temp_app_whitelist_duration"
+        android:persistent="false"
+        android:summary="@string/sms_temp_app_whitelist_duration_description"
+        android:key="et_sms_temp_app_whitelist_duration"/>
+
+</PreferenceScreen>

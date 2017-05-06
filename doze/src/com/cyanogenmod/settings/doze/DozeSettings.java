@@ -23,6 +23,7 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.Preference;
@@ -39,6 +40,7 @@ public class DozeSettings extends PreferenceActivity implements OnPreferenceChan
     private Context mContext;
     private SharedPreferences mPreferences;
 
+    private Preference mDozeSettings;
     private SwitchPreference mAmbientDisplayPreference;
     private SwitchPreference mPickUpPreference;
     private SwitchPreference mHandwavePreference;
@@ -47,7 +49,7 @@ public class DozeSettings extends PreferenceActivity implements OnPreferenceChan
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        addPreferencesFromResource(R.xml.doze_settings);
+        addPreferencesFromResource(R.xml.pref_main);
         mContext = getApplicationContext();
         boolean dozeEnabled = Utils.isDozeEnabled(mContext);
 
@@ -56,6 +58,9 @@ public class DozeSettings extends PreferenceActivity implements OnPreferenceChan
         if (savedInstanceState == null && !mPreferences.getBoolean("first_help_shown", false)) {
             showHelp();
         }
+
+        mDozeSettings =
+                findPreference(Utils.DOZE_SETTINGS_KEY);
 
         mAmbientDisplayPreference =
             (SwitchPreference) findPreference(Utils.AMBIENT_DISPLAY_KEY);
@@ -74,6 +79,15 @@ public class DozeSettings extends PreferenceActivity implements OnPreferenceChan
         mPocketPreference =
             (SwitchPreference) findPreference(Utils.GESTURE_POCKET_KEY);
         mPocketPreference.setOnPreferenceChangeListener(this);
+
+        mDozeSettings.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                Intent launchIntent = new Intent(getBaseContext(), EditorSettings.class);
+                startActivity(launchIntent);
+                return false;
+            }
+        });
 
         final ActionBar actionBar = getActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);

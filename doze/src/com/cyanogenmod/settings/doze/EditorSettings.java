@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.PreferenceActivity;
+import android.text.TextUtils;
 import android.util.KeyValueListParser;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -100,8 +101,16 @@ public class EditorSettings extends PreferenceActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         try {
-            // Get current values and set these on relative EditTextPreference
-            updateEditText(getCurrentValues());
+            String dozeValues = getCurrentValues();
+            // Fix for crash the first time that the rom started
+            if(dozeValues == null || dozeValues.contains("null")){
+                // Load default values
+                String defaultValues = restoreValues();
+                updateEditText(defaultValues);
+            }else{
+                // Get the values from System Settings
+                updateEditText(dozeValues);
+            }
         }catch (SettingNotFoundException e){
             Log.e("EditorSettings", e.getLocalizedMessage());
             Toast.makeText(getApplicationContext(), "Error to get values", Toast.LENGTH_LONG).show();
@@ -147,75 +156,100 @@ public class EditorSettings extends PreferenceActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void updateEditText(KeyValueListParser mParser){
+    private void updateEditText(String dozeValues){
 
-        long inactiveTimeout = mParser.getLong(KEY_INACTIVE_TIMEOUT, INACTIVE_TIMEOUT);
-        long maxIdlePendingTimeout = mParser.getLong(KEY_MAX_IDLE_PENDING_TIMEOUT, MAX_IDLE_PENDING_TIMEOUT);
-        long locatingTimeout = mParser.getLong(KEY_LOCATING_TIMEOUT, LOCATING_TIMEOUT);
-        long sensingTimeout =  mParser.getLong(KEY_SENSING_TIMEOUT, SENSING_TIMEOUT);
-        long locationAccuracy = mParser.getLong(KEY_LOCATION_ACCURACY, LOCATION_ACCURACY);
-        long motionInactiveTimeout =  mParser.getLong(KEY_MOTION_INACTIVE_TIMEOUT, MOTION_INACTIVE_TIMEOUT);
-        long idleAfterInactiveTimeout =  mParser.getLong(KEY_IDLE_AFTER_INACTIVE_TIMEOUT, IDLE_AFTER_INACTIVE_TIMEOUT);
-        long idlePendingTimeout =  mParser.getLong(KEY_IDLE_PENDING_TIMEOUT, IDLE_PENDING_TIMEOUT);
-        long idlePendingFactor = mParser.getLong(KEY_IDLE_PENDING_FACTOR, IDLE_PENDING_TIMEOUT);
-        long idleTimeout =  mParser.getLong(KEY_IDLE_TIMEOUT, IDLE_TIMEOUT);
-        long maxIdleTimeout = mParser.getLong(KEY_MAX_IDLE_TIMEOUT, MAX_IDLE_TIMEOUT);
-        long idleFactor =  mParser.getLong(KEY_IDLE_FACTOR, IDLE_FACTOR);
-        long minTimeToAlarm =   mParser.getLong(KEY_MIN_TIME_TO_ALARM, MIN_TIME_TO_ALARM);
-        long maxTempAppWhitelistDuration = mParser.getLong(KEY_MAX_TEMP_APP_WHITELIST_DURATION, MAX_TEMP_APP_WHITELIST_DURATION);
-        long mmsTempAppWhitelistDuration = mParser.getLong(KEY_MMS_TEMP_APP_WHITELIST_DURATION, MMS_TEMP_APP_WHITELIST_DURATION);
-        long smsTempAppWhitelistDuration = mParser.getLong(KEY_SMS_TEMP_APP_WHITELIST_DURATION, SMS_TEMP_APP_WHITELIST_DURATION);
+        if(dozeValues != null) {
+            KeyValueListParser mParser = new KeyValueListParser(',');
+            mParser.setString(dozeValues);
+            long inactiveTimeout = mParser.getLong(KEY_INACTIVE_TIMEOUT, INACTIVE_TIMEOUT);
+            long maxIdlePendingTimeout = mParser.getLong(KEY_MAX_IDLE_PENDING_TIMEOUT, MAX_IDLE_PENDING_TIMEOUT);
+            long locatingTimeout = mParser.getLong(KEY_LOCATING_TIMEOUT, LOCATING_TIMEOUT);
+            long sensingTimeout = mParser.getLong(KEY_SENSING_TIMEOUT, SENSING_TIMEOUT);
+            long locationAccuracy = mParser.getLong(KEY_LOCATION_ACCURACY, LOCATION_ACCURACY);
+            long motionInactiveTimeout = mParser.getLong(KEY_MOTION_INACTIVE_TIMEOUT, MOTION_INACTIVE_TIMEOUT);
+            long idleAfterInactiveTimeout = mParser.getLong(KEY_IDLE_AFTER_INACTIVE_TIMEOUT, IDLE_AFTER_INACTIVE_TIMEOUT);
+            long idlePendingTimeout = mParser.getLong(KEY_IDLE_PENDING_TIMEOUT, IDLE_PENDING_TIMEOUT);
+            long idlePendingFactor = mParser.getLong(KEY_IDLE_PENDING_FACTOR, IDLE_PENDING_TIMEOUT);
+            long idleTimeout = mParser.getLong(KEY_IDLE_TIMEOUT, IDLE_TIMEOUT);
+            long maxIdleTimeout = mParser.getLong(KEY_MAX_IDLE_TIMEOUT, MAX_IDLE_TIMEOUT);
+            long idleFactor = mParser.getLong(KEY_IDLE_FACTOR, IDLE_FACTOR);
+            long minTimeToAlarm = mParser.getLong(KEY_MIN_TIME_TO_ALARM, MIN_TIME_TO_ALARM);
+            long maxTempAppWhitelistDuration = mParser.getLong(KEY_MAX_TEMP_APP_WHITELIST_DURATION, MAX_TEMP_APP_WHITELIST_DURATION);
+            long mmsTempAppWhitelistDuration = mParser.getLong(KEY_MMS_TEMP_APP_WHITELIST_DURATION, MMS_TEMP_APP_WHITELIST_DURATION);
+            long smsTempAppWhitelistDuration = mParser.getLong(KEY_SMS_TEMP_APP_WHITELIST_DURATION, SMS_TEMP_APP_WHITELIST_DURATION);
 
-        et_inactive_to.setText(String.valueOf(inactiveTimeout / millisecondsInOneSecond));
-        et_sensing_to.setText(String.valueOf(sensingTimeout / millisecondsInOneSecond));
-        et_locating_to.setText(String.valueOf(locatingTimeout / millisecondsInOneSecond));
-        et_location_accuracy.setText(String.valueOf(locationAccuracy));
-        et_motion_inactive_to.setText(String.valueOf(motionInactiveTimeout / millisecondsInOneSecond));
-        et_idle_after_inactive_to.setText(String.valueOf(idleAfterInactiveTimeout / millisecondsInOneSecond));
-        et_idle_pending_to.setText(String.valueOf(idlePendingTimeout / millisecondsInOneSecond));
-        et_max_idle_pending_to.setText(String.valueOf(maxIdlePendingTimeout / millisecondsInOneSecond));
-        et_idle_pending_factor.setText(String.valueOf(idlePendingFactor));
-        et_idle_to.setText(String.valueOf(idleTimeout / millisecondsInOneSecond));
-        et_max_idle_to.setText(String.valueOf(maxIdleTimeout / millisecondsInOneSecond));
-        et_idle_factor.setText(String.valueOf(idleFactor));
-        et_min_time_to_alarm.setText(String.valueOf(minTimeToAlarm / millisecondsInOneSecond));
-        et_max_temp_app_whitelist_duration.setText(String.valueOf(maxTempAppWhitelistDuration / millisecondsInOneSecond));
-        et_mms_temp_app_whitelist_duration.setText(String.valueOf(mmsTempAppWhitelistDuration / millisecondsInOneSecond));
-        et_sms_temp_app_whitelist_duration.setText(String.valueOf(smsTempAppWhitelistDuration / millisecondsInOneSecond));
+            et_inactive_to.setText(String.valueOf(inactiveTimeout / millisecondsInOneSecond));
+            et_sensing_to.setText(String.valueOf(sensingTimeout / millisecondsInOneSecond));
+            et_locating_to.setText(String.valueOf(locatingTimeout / millisecondsInOneSecond));
+            et_location_accuracy.setText(String.valueOf(locationAccuracy));
+            et_motion_inactive_to.setText(String.valueOf(motionInactiveTimeout / millisecondsInOneSecond));
+            et_idle_after_inactive_to.setText(String.valueOf(idleAfterInactiveTimeout / millisecondsInOneSecond));
+            et_idle_pending_to.setText(String.valueOf(idlePendingTimeout / millisecondsInOneSecond));
+            et_max_idle_pending_to.setText(String.valueOf(maxIdlePendingTimeout / millisecondsInOneSecond));
+            et_idle_pending_factor.setText(String.valueOf(idlePendingFactor));
+            et_idle_to.setText(String.valueOf(idleTimeout / millisecondsInOneSecond));
+            et_max_idle_to.setText(String.valueOf(maxIdleTimeout / millisecondsInOneSecond));
+            et_idle_factor.setText(String.valueOf(idleFactor));
+            et_min_time_to_alarm.setText(String.valueOf(minTimeToAlarm / millisecondsInOneSecond));
+            et_max_temp_app_whitelist_duration.setText(String.valueOf(maxTempAppWhitelistDuration / millisecondsInOneSecond));
+            et_mms_temp_app_whitelist_duration.setText(String.valueOf(mmsTempAppWhitelistDuration / millisecondsInOneSecond));
+            et_sms_temp_app_whitelist_duration.setText(String.valueOf(smsTempAppWhitelistDuration / millisecondsInOneSecond));
+
+        }else{
+            Toast.makeText(getApplicationContext(), "Error to set doze values", Toast.LENGTH_SHORT).show();
+        }
+
     }
 
 
     private boolean saveValues() throws SettingNotFoundException{
+
         StringBuilder sb = new StringBuilder();
-        // Get new values from EditTex
-        sb.append(KEY_INACTIVE_TIMEOUT + "=" + Long.valueOf(et_inactive_to.getText()) * millisecondsInOneSecond + ",");
-        sb.append(KEY_SENSING_TIMEOUT + "=" + Long.valueOf(et_sensing_to.getText()) * millisecondsInOneSecond + ",");
-        sb.append(KEY_LOCATING_TIMEOUT + "=" + Long.valueOf(et_locating_to.getText()) * millisecondsInOneSecond + ",");
-        sb.append(KEY_LOCATION_ACCURACY + "=" + Long.valueOf(et_location_accuracy.getText()) + ",");
-        sb.append(KEY_MOTION_INACTIVE_TIMEOUT + "=" + Long.valueOf(et_motion_inactive_to.getText()) * millisecondsInOneSecond + ",");
-        sb.append(KEY_IDLE_AFTER_INACTIVE_TIMEOUT + "=" + Long.valueOf(et_idle_after_inactive_to.getText()) * millisecondsInOneSecond + ",");
-        sb.append(KEY_IDLE_PENDING_TIMEOUT + "=" + Long.valueOf(et_idle_pending_to.getText()) * millisecondsInOneSecond + ",");
-        sb.append(KEY_MAX_IDLE_PENDING_TIMEOUT + "=" + Long.valueOf(et_max_idle_pending_to.getText()) * millisecondsInOneSecond + ",");
-        sb.append(KEY_IDLE_PENDING_FACTOR + "=" + Long.valueOf(et_idle_pending_factor.getText()) + ",");
-        sb.append(KEY_IDLE_TIMEOUT + "=" + Long.valueOf(et_idle_to.getText()) * millisecondsInOneSecond + ",");
-        sb.append(KEY_MAX_IDLE_TIMEOUT + "=" + Long.valueOf(et_max_idle_to.getText()) * millisecondsInOneSecond + ",");
-        sb.append(KEY_IDLE_FACTOR + "=" + Long.valueOf(et_idle_factor.getText()) + ",");
-        sb.append(KEY_MIN_TIME_TO_ALARM + "=" + Long.valueOf(et_min_time_to_alarm.getText()) * millisecondsInOneSecond + ",");
-        sb.append(KEY_MAX_TEMP_APP_WHITELIST_DURATION + "=" + Long.valueOf(et_max_temp_app_whitelist_duration.getText()) * millisecondsInOneSecond + ",");
-        sb.append(KEY_MMS_TEMP_APP_WHITELIST_DURATION + "=" + Long.valueOf(et_mms_temp_app_whitelist_duration.getText()) * millisecondsInOneSecond + ",");
-        sb.append(KEY_SMS_TEMP_APP_WHITELIST_DURATION + "=" + Long.valueOf(et_sms_temp_app_whitelist_duration.getText()) * millisecondsInOneSecond);
+
+        long inactiveTimeout = TextUtils.isEmpty(et_inactive_to.getText()) ? INACTIVE_TIMEOUT : Long.valueOf(et_inactive_to.getText());
+        long maxIdlePendingTimeout = TextUtils.isEmpty(et_max_idle_pending_to.getText()) ? MAX_IDLE_PENDING_TIMEOUT : Long.valueOf(et_max_idle_pending_to.getText());
+        long locatingTimeout = TextUtils.isEmpty(et_locating_to.getText()) ? LOCATING_TIMEOUT : Long.valueOf(et_locating_to.getText());
+        long sensingTimeout = TextUtils.isEmpty(et_sensing_to.getText()) ? SENSING_TIMEOUT : Long.valueOf(et_sensing_to.getText());
+        long locationAccuracy = TextUtils.isEmpty(et_location_accuracy.getText()) ? LOCATION_ACCURACY : Long.valueOf(et_location_accuracy.getText());
+        long motionInactiveTimeout = TextUtils.isEmpty(et_motion_inactive_to.getText()) ? MOTION_INACTIVE_TIMEOUT : Long.valueOf(et_motion_inactive_to.getText());
+        long idleAfterInactiveTimeout = TextUtils.isEmpty(et_idle_after_inactive_to.getText()) ? IDLE_AFTER_INACTIVE_TIMEOUT : Long.valueOf(et_idle_after_inactive_to.getText());
+        long idlePendingTimeout = TextUtils.isEmpty(et_idle_pending_to.getText()) ? IDLE_PENDING_TIMEOUT : Long.valueOf(et_idle_pending_to.getText());
+        long idlePendingFactor = TextUtils.isEmpty(et_idle_pending_factor.getText()) ? IDLE_PENDING_FACTOR : Long.valueOf(et_idle_pending_factor.getText());
+        long idleTimeout = TextUtils.isEmpty(et_idle_to.getText()) ? IDLE_TIMEOUT : Long.valueOf(et_idle_to.getText());
+        long maxIdleTimeout = TextUtils.isEmpty(et_max_idle_to.getText()) ? MAX_IDLE_TIMEOUT : Long.valueOf(et_max_idle_to.getText());
+        long idleFactor = TextUtils.isEmpty(et_idle_factor.getText()) ? IDLE_FACTOR : Long.valueOf(et_idle_factor.getText());
+        long minTimeToAlarm = TextUtils.isEmpty(et_min_time_to_alarm.getText()) ? MIN_TIME_TO_ALARM : Long.valueOf(et_min_time_to_alarm.getText());
+        long maxTempAppWhitelistDuration = TextUtils.isEmpty(et_max_temp_app_whitelist_duration.getText()) ? MAX_TEMP_APP_WHITELIST_DURATION : Long.valueOf(et_max_temp_app_whitelist_duration.getText());
+        long mmsTempAppWhitelistDuration = TextUtils.isEmpty(et_mms_temp_app_whitelist_duration.getText()) ? MMS_TEMP_APP_WHITELIST_DURATION : Long.valueOf(et_mms_temp_app_whitelist_duration.getText());
+        long smsTempAppWhitelistDuration = TextUtils.isEmpty(et_sms_temp_app_whitelist_duration.getText()) ? SMS_TEMP_APP_WHITELIST_DURATION : Long.valueOf(et_sms_temp_app_whitelist_duration.getText());
+
+        // Get new values from EditText
+        sb.append(KEY_INACTIVE_TIMEOUT + "=" + inactiveTimeout * millisecondsInOneSecond + ",");
+        sb.append(KEY_SENSING_TIMEOUT + "=" + sensingTimeout * millisecondsInOneSecond + ",");
+        sb.append(KEY_LOCATING_TIMEOUT + "=" + locatingTimeout * millisecondsInOneSecond + ",");
+        sb.append(KEY_LOCATION_ACCURACY + "=" + locationAccuracy + ",");
+        sb.append(KEY_MOTION_INACTIVE_TIMEOUT + "=" + motionInactiveTimeout * millisecondsInOneSecond + ",");
+        sb.append(KEY_IDLE_AFTER_INACTIVE_TIMEOUT + "=" + idleAfterInactiveTimeout * millisecondsInOneSecond + ",");
+        sb.append(KEY_IDLE_PENDING_TIMEOUT + "=" + idlePendingTimeout * millisecondsInOneSecond + ",");
+        sb.append(KEY_MAX_IDLE_PENDING_TIMEOUT + "=" + maxIdlePendingTimeout * millisecondsInOneSecond + ",");
+        sb.append(KEY_IDLE_PENDING_FACTOR + "=" + idlePendingFactor + ",");
+        sb.append(KEY_IDLE_TIMEOUT + "=" + idleTimeout * millisecondsInOneSecond + ",");
+        sb.append(KEY_MAX_IDLE_TIMEOUT + "=" + maxIdleTimeout * millisecondsInOneSecond + ",");
+        sb.append(KEY_IDLE_FACTOR + "=" + idleFactor + ",");
+        sb.append(KEY_MIN_TIME_TO_ALARM + "=" + minTimeToAlarm * millisecondsInOneSecond + ",");
+        sb.append(KEY_MAX_TEMP_APP_WHITELIST_DURATION + "=" + maxTempAppWhitelistDuration * millisecondsInOneSecond + ",");
+        sb.append(KEY_MMS_TEMP_APP_WHITELIST_DURATION + "=" + mmsTempAppWhitelistDuration * millisecondsInOneSecond + ",");
+        sb.append(KEY_SMS_TEMP_APP_WHITELIST_DURATION + "=" + smsTempAppWhitelistDuration * millisecondsInOneSecond);
 
         // Save new values into Setting
         return Settings.Global.putString(getContentResolver(), Settings.Global.DEVICE_IDLE_CONSTANTS, sb.toString());
     }
 
-    private KeyValueListParser getCurrentValues() throws SettingNotFoundException {
-        KeyValueListParser mParser = new KeyValueListParser(',');
-        mParser.setString(Settings.Global.getString(getContentResolver(), Settings.Global.DEVICE_IDLE_CONSTANTS));
-        return mParser;
+    private String getCurrentValues() throws SettingNotFoundException {
+        return Settings.Global.getString(getContentResolver(), Settings.Global.DEVICE_IDLE_CONSTANTS);
     }
 
-    private KeyValueListParser restoreValues() throws Settings.SettingNotFoundException{
+    private String restoreValues() throws Settings.SettingNotFoundException{
         StringBuilder sb = new StringBuilder();
         // Restore old values
         sb.append(KEY_INACTIVE_TIMEOUT + "=" + INACTIVE_TIMEOUT + ",");
@@ -235,9 +269,7 @@ public class EditorSettings extends PreferenceActivity {
         sb.append(KEY_MMS_TEMP_APP_WHITELIST_DURATION + "=" + MMS_TEMP_APP_WHITELIST_DURATION + ",");
         sb.append(KEY_SMS_TEMP_APP_WHITELIST_DURATION + "=" + SMS_TEMP_APP_WHITELIST_DURATION);
 
-        KeyValueListParser mParser =  new KeyValueListParser(',');
-        mParser.setString(sb.toString());
-        return mParser;
+        return sb.toString();
     }
 
     private void showToastMessage(boolean successfull){

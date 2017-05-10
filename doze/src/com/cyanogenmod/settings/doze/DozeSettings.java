@@ -89,6 +89,8 @@ public class DozeSettings extends PreferenceActivity implements OnPreferenceChan
             }
         });
 
+        mDozeSettings.setEnabled(dozeEnabled);
+
         final ActionBar actionBar = getActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
     }
